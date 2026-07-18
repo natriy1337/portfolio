@@ -102,20 +102,21 @@ main,
   z-index: 1;
 }
 
-/* ——— Nav: chips + telegram ——— */
+/* ——— Nav: compact centered bar ——— */
 .nav {
   position: fixed;
   top: 16px;
   left: 50%;
   transform: translateX(-50%);
-  width: min(720px, calc(100% - 32px));
-  height: 58px;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  height: 56px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 0 8px 0 8px;
-  background: rgba(7, 10, 15, 0.78);
+  justify-content: center;
+  gap: 8px;
+  padding: 6px;
+  background: rgba(7, 10, 15, 0.82);
   border: 1px solid var(--border);
   border-radius: 999px;
   backdrop-filter: blur(18px);
@@ -126,11 +127,11 @@ main,
 .nav__links {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 4px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 0;
 }
 
 .nav__chip {
@@ -138,42 +139,25 @@ main,
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 38px;
-  padding: 0 16px;
-  font-size: 0.88rem;
+  height: 40px;
+  padding: 0 18px;
+  font-size: 0.9rem;
   font-weight: 500;
   line-height: 1;
   color: var(--muted);
   border-radius: 999px;
   border: 1px solid transparent;
+  background: transparent;
   cursor: pointer;
   transition: color 0.22s ease, background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
-}
-
-.nav__chip::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 7px;
-  width: 0;
-  height: 2px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  transform: translateX(-50%);
-  transition: width 0.25s var(--ease);
 }
 
 .nav__chip:hover,
 .nav__chip:focus-visible {
   color: var(--text);
-  background: linear-gradient(135deg, rgba(91, 141, 239, 0.18), rgba(139, 108, 255, 0.12));
-  border-color: rgba(91, 141, 239, 0.4);
-  box-shadow: 0 0 22px rgba(91, 141, 239, 0.18);
-}
-
-.nav__chip:hover::after,
-.nav__chip:focus-visible::after {
-  width: 40%;
+  background: linear-gradient(135deg, rgba(91, 141, 239, 0.2), rgba(139, 108, 255, 0.14));
+  border-color: rgba(91, 141, 239, 0.45);
+  box-shadow: 0 0 22px rgba(91, 141, 239, 0.2);
 }
 
 .nav__chip:focus-visible {
@@ -626,8 +610,7 @@ main,
 
 @media (max-width: 900px) {
   .nav {
-    width: min(420px, calc(100% - 24px));
-    justify-content: center;
+    width: max-content;
   }
 
   .nav__links {
