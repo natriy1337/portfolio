@@ -345,6 +345,7 @@ main,
 .project[data-accent="mint"] .btn--project:hover { background: #6ec9a8; box-shadow: 0 8px 24px rgba(110, 201, 168, 0.35); }
 .project[data-accent="silver"] .btn--project:hover { background: #b8c4d4; }
 .project[data-accent="rose"] .btn--project:hover { background: #e08a9a; box-shadow: 0 8px 24px rgba(224, 138, 154, 0.35); }
+.project[data-accent="ember"] .btn--project:hover { background: #c9a227; box-shadow: 0 8px 24px rgba(201, 162, 39, 0.35); }
 
 /* ——— Hero centered ——— */
 .hero {
@@ -528,6 +529,7 @@ main,
 .project[data-accent="mint"] .project__tag { color: #6ec9a8; }
 .project[data-accent="silver"] .project__tag { color: #b8c4d4; }
 .project[data-accent="rose"] .project__tag { color: #e08a9a; }
+.project[data-accent="ember"] .project__tag { color: #c9a227; }
 
 .approach__grid {
   display: grid;
