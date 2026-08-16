@@ -442,12 +442,12 @@ main,
 .marquee__track {
   display: flex;
   width: max-content;
-  animation: marquee-x 38s linear infinite;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
 }
 
-@keyframes marquee-x {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
+.marquee__track.is-ready {
+  opacity: 1;
 }
 
 .marquee__group {
@@ -548,8 +548,6 @@ main,
 }
 
 .project {
-  content-visibility: auto;
-  contain-intrinsic-size: 360px;
   border-radius: var(--radius);
   border: 1px solid var(--line);
   background: var(--surface);
@@ -558,7 +556,6 @@ main,
   transition:
     opacity 0.35s var(--ease),
     transform 0.35s var(--ease),
-    filter 0.35s var(--ease),
     border-color 0.3s ease,
     box-shadow 0.3s ease;
 }
@@ -1034,7 +1031,6 @@ main,
   body.has-cursor a,
   body.has-cursor button { cursor: pointer; }
   .cursor { display: none; }
-  .marquee__track { animation: none; }
 }
 
 @media (pointer: coarse) {

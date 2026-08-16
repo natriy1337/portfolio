@@ -5,23 +5,103 @@
   const year = document.getElementById("year");
   if (year) year.textContent = String(new Date().getFullYear());
 
-  const reveals = document.querySelectorAll(".reveal:not(.hero .reveal)");
+  const track = document.getElementById("marqueeTrack");
+  let marqueeOffset = 0;
+  let marqueeWidth = 0;
+  let marqueeRaf = 0;
+  let marqueeLast = 0;
+  const MARQUEE_SPEED = 38;
+
+  const buildMarquee = () => {
+    if (!track) return;
+    const first = track.querySelector(".marquee__group");
+    if (!first) return;
+
+    cancelAnimationFrame(marqueeRaf);
+    track.querySelectorAll(".marquee__group").forEach((node, i) => {
+      if (i > 0) node.remove();
+    });
+
+    const viewport = track.parentElement?.clientWidth || window.innerWidth;
+    let guard = 0;
+    while (track.scrollWidth < viewport * 2 + 40 && guard < 8) {
+      track.appendChild(first.cloneNode(true));
+      guard += 1;
+    }
+
+    if (track.querySelectorAll(".marquee__group").length < 2) {
+      track.appendChild(first.cloneNode(true));
+    }
+
+    marqueeWidth = first.getBoundingClientRect().width;
+    marqueeOffset = marqueeOffset % (marqueeWidth || 1);
+    track.style.transform = `translate3d(${marqueeOffset}px, 0, 0)`;
+    track.classList.add("is-ready");
+
+    if (!reduceMotion && marqueeWidth > 0) {
+      marqueeLast = performance.now();
+      const tick = (now) => {
+        if (!document.hidden) {
+          const dt = Math.min(64, now - marqueeLast) / 1000;
+          marqueeLast = now;
+          marqueeOffset -= MARQUEE_SPEED * dt;
+          if (marqueeOffset <= -marqueeWidth) {
+            marqueeOffset += marqueeWidth;
+          }
+          track.style.transform = `translate3d(${marqueeOffset}px, 0, 0)`;
+        } else {
+          marqueeLast = now;
+        }
+        marqueeRaf = requestAnimationFrame(tick);
+      };
+      marqueeRaf = requestAnimationFrame(tick);
+    }
+  };
+
+  const startMarquee = () => {
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(buildMarquee);
+    } else {
+      buildMarquee();
+    }
+  };
+  startMarquee();
+  window.addEventListener("resize", () => {
+    window.clearTimeout(window.__marqueeTimer);
+    window.__marqueeTimer = window.setTimeout(buildMarquee, 200);
+  });
+
+  const revealNodes = [...document.querySelectorAll(".reveal")].filter(
+    (el) => !el.closest(".hero")
+  );
+
   if (reduceMotion) {
     document.querySelectorAll(".reveal").forEach((el) => el.classList.add("is-visible"));
   } else {
+    const showReveal = (el) => {
+      const delay = Number(el.getAttribute("data-delay") || 0);
+      window.setTimeout(() => el.classList.add("is-visible"), delay);
+    };
+
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
-          const el = entry.target;
-          const delay = Number(el.getAttribute("data-delay") || 0);
-          window.setTimeout(() => el.classList.add("is-visible"), delay);
-          io.unobserve(el);
+          showReveal(entry.target);
+          io.unobserve(entry.target);
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -36px 0px" }
+      { threshold: 0.08, rootMargin: "0px 0px -8% 0px" }
     );
-    reveals.forEach((el) => io.observe(el));
+
+    revealNodes.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.92 && rect.bottom > 0) {
+        showReveal(el);
+      } else {
+        io.observe(el);
+      }
+    });
   }
 
   const counters = document.querySelectorAll("[data-count]");
@@ -56,12 +136,38 @@
 
   const filters = [...document.querySelectorAll(".filter")];
   const projects = [...document.querySelectorAll(".project")];
+  let filterToken = 0;
 
   const applyFilter = (value) => {
-    projects.forEach((card) => {
+    const token = ++filterToken;
+
+    projects.forEach((card, i) => {
       const cat = card.getAttribute("data-cat");
       const show = value === "all" || cat === value;
-      card.classList.toggle("is-hidden", !show);
+      const wasHidden = card.classList.contains("is-hidden");
+
+      card.style.animation = "none";
+      card.classList.remove("is-enter");
+
+      if (!show) {
+        card.classList.add("is-hidden");
+        return;
+      }
+
+      card.classList.remove("is-hidden");
+      card.classList.add("is-visible");
+
+      if (reduceMotion || !wasHidden) return;
+
+      card.style.setProperty("--enter-delay", `${i * 40}ms`);
+      void card.offsetWidth;
+      card.style.animation = "";
+      card.classList.add("is-enter");
+      window.setTimeout(() => {
+        if (token !== filterToken) return;
+        card.classList.remove("is-enter");
+        card.style.removeProperty("--enter-delay");
+      }, 520 + i * 40);
     });
   };
 
@@ -148,7 +254,6 @@
       let my = window.innerHeight / 2;
       let cx = mx;
       let cy = my;
-      let raf = 0;
 
       window.addEventListener(
         "pointermove",
@@ -170,9 +275,9 @@
           cy += (my - cy) * 0.18;
           if (cursor) cursor.style.transform = `translate(${cx}px, ${cy}px)`;
         }
-        raf = requestAnimationFrame(loopCursor);
+        requestAnimationFrame(loopCursor);
       };
-      raf = requestAnimationFrame(loopCursor);
+      requestAnimationFrame(loopCursor);
 
       document.querySelectorAll("a, button").forEach((el) => {
         el.addEventListener("pointerenter", () => document.body.classList.add("is-hovering"));
