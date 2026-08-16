@@ -151,10 +151,13 @@ button {
   left: 0;
   z-index: 60;
   height: 2px;
-  width: 0;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
   background: var(--grad);
   box-shadow: 0 0 12px rgba(125, 211, 252, 0.45);
   pointer-events: none;
+  will-change: transform;
 }
 
 .toast {
@@ -441,8 +444,12 @@ main,
 .marquee__track {
   display: flex;
   width: max-content;
-  will-change: transform;
-  transform: translate3d(0, 0, 0);
+  animation: marquee-x 38s linear infinite;
+}
+
+@keyframes marquee-x {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
 }
 
 .marquee__group {
@@ -1030,6 +1037,7 @@ main,
   body.has-cursor a,
   body.has-cursor button { cursor: pointer; }
   .cursor { display: none; }
+  .marquee__track { animation: none; }
 }
 
 @media (pointer: coarse) {
