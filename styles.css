@@ -442,12 +442,16 @@ main,
 .marquee__track {
   display: flex;
   width: max-content;
-  transform: translate3d(0, 0, 0);
-  will-change: transform;
+  animation: marquee-scroll 42s linear infinite;
 }
 
-.marquee__track.is-ready {
-  opacity: 1;
+@keyframes marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
 }
 
 .marquee__group {
@@ -1037,6 +1041,7 @@ main,
   body.has-cursor a,
   body.has-cursor button { cursor: pointer; }
   .cursor { display: none; }
+  .marquee__track { animation: none; }
 }
 
 @media (pointer: coarse) {
