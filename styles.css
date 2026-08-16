@@ -211,7 +211,6 @@ button {
   font-weight: 500;
   opacity: 0;
   pointer-events: none;
-  backdrop-filter: blur(12px);
   transition: opacity 0.3s ease, transform 0.3s var(--ease);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 }
