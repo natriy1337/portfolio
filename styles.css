@@ -553,32 +553,38 @@ main,
   background: var(--surface);
   overflow: hidden;
   transform-origin: center center;
+  opacity: 1;
+  transform: none;
   transition:
-    opacity 0.35s var(--ease),
-    transform 0.35s var(--ease),
+    opacity 0.32s var(--ease),
+    transform 0.32s var(--ease),
     border-color 0.3s ease,
     box-shadow 0.3s ease;
 }
 
+.project.is-leaving {
+  opacity: 0 !important;
+  transform: translateY(14px) scale(0.96) !important;
+  pointer-events: none;
+}
+
 .project.is-enter {
-  animation: project-enter 0.48s var(--ease) var(--enter-delay, 0ms) both;
+  animation: project-enter 0.52s var(--ease) var(--enter-delay, 0ms) both;
 }
 
 @keyframes project-enter {
   from {
     opacity: 0;
-    transform: translateY(18px) scale(0.96);
-    filter: none;
+    transform: translateY(22px) scale(0.94);
   }
   to {
     opacity: 1;
-    transform: none;
-    filter: none;
+    transform: translateY(0) scale(1);
   }
 }
 
 .project.is-hidden {
-  display: none;
+  display: none !important;
 }
 
 .project:hover {

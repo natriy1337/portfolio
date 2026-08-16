@@ -140,40 +140,51 @@
 
   const applyFilter = (value) => {
     const token = ++filterToken;
+    let enterIndex = 0;
 
-    projects.forEach((card, i) => {
+    projects.forEach((card) => {
       const cat = card.getAttribute("data-cat");
       const show = value === "all" || cat === value;
-      const wasHidden = card.classList.contains("is-hidden");
+      const isHidden = card.classList.contains("is-hidden");
 
-      card.style.animation = "none";
       card.classList.remove("is-enter");
+      card.style.removeProperty("animation");
+      card.style.removeProperty("--enter-delay");
 
       if (!show) {
-        card.classList.add("is-hidden");
+        if (isHidden) return;
+        card.classList.add("is-leaving");
+        window.setTimeout(() => {
+          if (token !== filterToken) return;
+          card.classList.add("is-hidden");
+          card.classList.remove("is-leaving");
+        }, 280);
         return;
       }
 
+      card.classList.remove("is-leaving");
       card.classList.remove("is-hidden");
       card.classList.add("is-visible");
 
-      if (reduceMotion || !wasHidden) return;
+      if (reduceMotion) return;
 
-      card.style.setProperty("--enter-delay", `${i * 40}ms`);
+      const delay = enterIndex * 55;
+      enterIndex += 1;
+      card.style.setProperty("--enter-delay", `${delay}ms`);
       void card.offsetWidth;
-      card.style.animation = "";
       card.classList.add("is-enter");
       window.setTimeout(() => {
         if (token !== filterToken) return;
         card.classList.remove("is-enter");
         card.style.removeProperty("--enter-delay");
-      }, 520 + i * 40);
+      }, 560 + delay);
     });
   };
 
   filters.forEach((btn) => {
     btn.addEventListener("click", () => {
       const value = btn.getAttribute("data-filter") || "all";
+      if (btn.classList.contains("is-active")) return;
       filters.forEach((f) => {
         const on = f === btn;
         f.classList.toggle("is-active", on);
