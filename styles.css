@@ -6,13 +6,13 @@
   --line: rgba(255, 255, 255, 0.08);
   --line-strong: rgba(255, 255, 255, 0.14);
   --text: #f4f6fa;
-  --muted: #93a0b5;
+  --muted: #c5cdd9;
   --cyan: #7dd3fc;
   --violet: #c4b5fd;
   --rose: #fda4af;
   --grad: linear-gradient(120deg, var(--cyan), var(--violet) 48%, var(--rose));
-  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
-  --font-body: "DM Sans", system-ui, sans-serif;
+  --font-display: "Unbounded", system-ui, sans-serif;
+  --font-body: "Manrope", system-ui, sans-serif;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --radius: 22px;
   --nav-h: 76px;
@@ -59,6 +59,24 @@ a {
   text-decoration: none;
 }
 
+.skip {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 100;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #f4f6fa;
+  color: #071018;
+  font-weight: 700;
+  transform: translateY(-140%);
+  transition: transform 0.2s ease;
+}
+
+.skip:focus {
+  transform: translateY(0);
+}
+
 button {
   font: inherit;
   color: inherit;
@@ -66,7 +84,6 @@ button {
   border: none;
 }
 
-/* Atmosphere */
 .mesh {
   position: fixed;
   inset: 0;
@@ -209,7 +226,6 @@ main,
   z-index: 1;
 }
 
-/* Nav */
 .nav {
   position: fixed;
   top: 16px;
@@ -261,7 +277,6 @@ main,
   color: var(--cyan);
 }
 
-/* Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -329,7 +344,6 @@ main,
   outline-offset: 3px;
 }
 
-/* Hero */
 .hero {
   width: min(980px, calc(100% - 40px));
   margin: 0 auto;
@@ -410,7 +424,6 @@ main,
   font-size: 0.82rem;
 }
 
-/* Marquee — driven by JS for true seamless loop */
 .marquee {
   overflow: hidden;
   padding: 18px 0;
@@ -450,7 +463,6 @@ main,
   color: rgba(125, 211, 252, 0.55);
 }
 
-/* Sections */
 .work,
 .craft,
 .contact {
@@ -479,7 +491,6 @@ main,
   font-size: 1.05rem;
 }
 
-/* Filters */
 .filters {
   display: flex;
   flex-wrap: nowrap;
@@ -525,7 +536,6 @@ main,
   transform: translateY(-1px);
 }
 
-/* Projects */
 .projects {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -533,6 +543,8 @@ main,
 }
 
 .project {
+  content-visibility: auto;
+  contain-intrinsic-size: 360px;
   border-radius: var(--radius);
   border: 1px solid var(--line);
   background: var(--surface);
@@ -554,7 +566,7 @@ main,
   from {
     opacity: 0;
     transform: translateY(18px) scale(0.96);
-    filter: blur(6px);
+    filter: none;
   }
   to {
     opacity: 1;
@@ -605,6 +617,12 @@ main,
   background: var(--bg-2);
   transform-style: preserve-3d;
   perspective: 900px;
+}
+
+.project__media picture {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .project__media img {
@@ -676,16 +694,15 @@ main,
   font-size: 0.94rem;
 }
 
-.project[data-accent="amber"] .project__tag { color: #d4a574; }
-.project[data-accent="cyan"] .project__tag { color: #6ec9d4; }
-.project[data-accent="violet"] .project__tag { color: #a78bfa; }
-.project[data-accent="blue"] .project__tag { color: #5b8def; }
-.project[data-accent="mint"] .project__tag { color: #6ec9a8; }
-.project[data-accent="silver"] .project__tag { color: #b8c4d4; }
-.project[data-accent="rose"] .project__tag { color: #e08a9a; }
-.project[data-accent="ember"] .project__tag { color: #c9a227; }
+.project[data-accent="amber"] .project__tag { color: #e0b98a; }
+.project[data-accent="cyan"] .project__tag { color: #7ed4de; }
+.project[data-accent="violet"] .project__tag { color: #b9a6ff; }
+.project[data-accent="blue"] .project__tag { color: #7aa3f5; }
+.project[data-accent="mint"] .project__tag { color: #7fd4b4; }
+.project[data-accent="silver"] .project__tag { color: #c5d0de; }
+.project[data-accent="rose"] .project__tag { color: #f0a8b6; }
+.project[data-accent="ember"] .project__tag { color: #e0bc4a; }
 
-/* Craft */
 .craft__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -728,7 +745,6 @@ main,
   font-size: 0.95rem;
 }
 
-/* Contact */
 .contact {
   padding-bottom: 56px;
 }
@@ -793,24 +809,30 @@ main,
   display: none;
 }
 
-/* Reveal */
 .reveal {
   opacity: 0;
-  transform: translateY(32px);
-  filter: blur(6px);
+  transform: translateY(28px);
   transition:
-    opacity 0.9s var(--ease),
-    transform 0.9s var(--ease),
-    filter 0.9s var(--ease);
+    opacity 0.75s var(--ease),
+    transform 0.75s var(--ease);
 }
 
 .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
-  filter: blur(0);
+}
+
+.hero .reveal {
+  opacity: 1;
+  transform: none;
 }
 
 @media (max-width: 900px) {
+  .mesh,
+  .noise {
+    display: none;
+  }
+
   .nav__links {
     display: none;
   }

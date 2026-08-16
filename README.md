@@ -1,5 +1,3 @@
-# Портфолио
+Портфолио веб-работ.
 
-Тёмное одностраничное портфолио с работами.
-
-Онлайн: https://natriy1337.github.io/portfolio/
+https://natriy1337.github.io/portfolio/

@@ -5,13 +5,13 @@
   const year = document.getElementById("year");
   if (year) year.textContent = String(new Date().getFullYear());
 
-  /* ——— Seamless marquee (no restart jump) ——— */
+  
   const track = document.getElementById("marqueeTrack");
   let marqueeOffset = 0;
   let marqueeWidth = 0;
   let marqueeRaf = 0;
   let marqueeLast = 0;
-  const MARQUEE_SPEED = 38; // px per second
+  const MARQUEE_SPEED = 38;
 
   const buildMarquee = () => {
     if (!track) return;
@@ -23,14 +23,13 @@
       if (i > 0) node.remove();
     });
 
-    // Duplicate until content is wider than viewport * 2
     const viewport = track.parentElement?.clientWidth || window.innerWidth;
     let guard = 0;
     while (track.scrollWidth < viewport * 2 + 40 && guard < 8) {
       track.appendChild(first.cloneNode(true));
       guard += 1;
     }
-    // Always keep at least 2 groups for seamless wrap
+
     if (track.querySelectorAll(".marquee__group").length < 2) {
       track.appendChild(first.cloneNode(true));
     }
@@ -43,6 +42,11 @@
     if (!reduceMotion && marqueeWidth > 0) {
       marqueeLast = performance.now();
       const tick = (now) => {
+        if (document.hidden) {
+          marqueeLast = now;
+          marqueeRaf = requestAnimationFrame(tick);
+          return;
+        }
         const dt = Math.min(64, now - marqueeLast) / 1000;
         marqueeLast = now;
         marqueeOffset -= MARQUEE_SPEED * dt;
@@ -56,7 +60,6 @@
     }
   };
 
-  // Wait for fonts so widths are stable
   const startMarquee = () => {
     if (document.fonts?.ready) {
       document.fonts.ready.then(buildMarquee);
@@ -70,7 +73,7 @@
     window.__marqueeTimer = window.setTimeout(buildMarquee, 200);
   });
 
-  /* ——— Reveal ——— */
+  
   const reveals = document.querySelectorAll(".reveal");
   if (reduceMotion) {
     reveals.forEach((el) => el.classList.add("is-visible"));
@@ -96,7 +99,7 @@
     });
   }
 
-  /* ——— Count-up ——— */
+  
   const counters = document.querySelectorAll("[data-count]");
   const animateCount = (el) => {
     const target = Number(el.getAttribute("data-count") || 0);
@@ -128,7 +131,7 @@
     counters.forEach((el) => cio.observe(el));
   }
 
-  /* ——— Category filter (instant + smooth, never locks) ——— */
+  
   const filters = [...document.querySelectorAll(".filter")];
   const projects = [...document.querySelectorAll(".project")];
   let filterToken = 0;
@@ -171,13 +174,12 @@
       filters.forEach((f) => {
         const on = f === btn;
         f.classList.toggle("is-active", on);
-        f.setAttribute("aria-selected", on ? "true" : "false");
+        f.setAttribute("aria-pressed", on ? "true" : "false");
       });
       applyFilter(value);
     });
   });
 
-  // Keyboard: 1–4 switch filters on desktop
   window.addEventListener("keydown", (e) => {
     if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
     const map = { "1": "all", "2": "shop", "3": "service", "4": "brand" };
@@ -196,7 +198,6 @@
     window.__toastTimer = window.setTimeout(() => toast.classList.remove("is-on"), 2200);
   };
 
-  // Copy Telegram on contact CTA double-click
   document.querySelectorAll('a[href*="t.me/Zxci3user1337"]').forEach((link) => {
     link.addEventListener("dblclick", async (e) => {
       e.preventDefault();
@@ -209,7 +210,7 @@
     });
   });
 
-  /* ——— Scroll progress ——— */
+  
   const progress = document.getElementById("scrollProgress");
   const updateProgress = () => {
     if (!progress) return;
@@ -220,7 +221,7 @@
   window.addEventListener("scroll", updateProgress, { passive: true });
   updateProgress();
 
-  /* ——— Active nav section ——— */
+  
   const sections = ["work", "craft", "contact"]
     .map((id) => document.getElementById(id))
     .filter(Boolean);
@@ -242,7 +243,7 @@
     sections.forEach((s) => sio.observe(s));
   }
 
-  /* ——— Desktop interactions ——— */
+  
   if (!reduceMotion && finePointer) {
     document.body.classList.add("has-cursor");
 
@@ -273,9 +274,11 @@
     );
 
     const loopCursor = () => {
-      cx += (mx - cx) * 0.18;
-      cy += (my - cy) * 0.18;
-      if (cursor) cursor.style.transform = `translate(${cx}px, ${cy}px)`;
+      if (!document.hidden) {
+        cx += (mx - cx) * 0.18;
+        cy += (my - cy) * 0.18;
+        if (cursor) cursor.style.transform = `translate(${cx}px, ${cy}px)`;
+      }
       requestAnimationFrame(loopCursor);
     };
     requestAnimationFrame(loopCursor);
@@ -311,7 +314,6 @@
       });
     });
 
-    // Spotlight over projects grid
     const spotlight = document.getElementById("projects");
     if (spotlight) {
       spotlight.addEventListener("pointermove", (e) => {
@@ -327,7 +329,6 @@
       });
     }
 
-    // Title scramble on project hover
     const scramble = (el) => {
       const original = el.dataset.original || el.textContent || "";
       el.dataset.original = original;
@@ -355,7 +356,6 @@
       title.parentElement?.parentElement?.addEventListener("pointerenter", () => scramble(title));
     });
 
-    // Hero parallax on scroll
     const hero = document.querySelector(".hero");
     window.addEventListener(
       "scroll",

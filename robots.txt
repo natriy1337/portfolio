@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://natriy1337.github.io/portfolio/sitemap.xml
