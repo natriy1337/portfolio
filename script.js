@@ -5,40 +5,74 @@
   const year = document.getElementById("year");
   if (year) year.textContent = String(new Date().getFullYear());
 
-  // Seamless infinite marquee: clone group once, duration by width
-  const setupMarquee = () => {
-    const track = document.getElementById("marqueeTrack");
+  const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
+
+  /* ——— Seamless marquee (no restart jump) ——— */
+  const track = document.getElementById("marqueeTrack");
+  let marqueeOffset = 0;
+  let marqueeWidth = 0;
+  let marqueeRaf = 0;
+  let marqueeLast = 0;
+  const MARQUEE_SPEED = 38; // px per second
+
+  const buildMarquee = () => {
     if (!track) return;
     const first = track.querySelector(".marquee__group");
     if (!first) return;
 
-    track.classList.remove("is-ready");
+    cancelAnimationFrame(marqueeRaf);
     track.querySelectorAll(".marquee__group").forEach((node, i) => {
       if (i > 0) node.remove();
     });
 
-    const clone = first.cloneNode(true);
-    track.appendChild(clone);
-
-    const width = first.getBoundingClientRect().width;
-    if (width > 0) {
-      const seconds = Math.max(28, Math.round(width / 42));
-      track.style.setProperty("--marquee-duration", `${seconds}s`);
+    // Duplicate until content is wider than viewport * 2
+    const viewport = track.parentElement?.clientWidth || window.innerWidth;
+    let guard = 0;
+    while (track.scrollWidth < viewport * 2 + 40 && guard < 8) {
+      track.appendChild(first.cloneNode(true));
+      guard += 1;
     }
+    // Always keep at least 2 groups for seamless wrap
+    if (track.querySelectorAll(".marquee__group").length < 2) {
+      track.appendChild(first.cloneNode(true));
+    }
+
+    marqueeWidth = first.getBoundingClientRect().width;
+    marqueeOffset = marqueeOffset % (marqueeWidth || 1);
+    track.style.transform = `translate3d(${marqueeOffset}px, 0, 0)`;
     track.classList.add("is-ready");
+
+    if (!reduceMotion && marqueeWidth > 0) {
+      marqueeLast = performance.now();
+      const tick = (now) => {
+        const dt = Math.min(64, now - marqueeLast) / 1000;
+        marqueeLast = now;
+        marqueeOffset -= MARQUEE_SPEED * dt;
+        if (marqueeOffset <= -marqueeWidth) {
+          marqueeOffset += marqueeWidth;
+        }
+        track.style.transform = `translate3d(${marqueeOffset}px, 0, 0)`;
+        marqueeRaf = requestAnimationFrame(tick);
+      };
+      marqueeRaf = requestAnimationFrame(tick);
+    }
   };
 
-  if (!reduceMotion) {
-    setupMarquee();
-    window.addEventListener("resize", () => {
-      window.clearTimeout(window.__marqueeTimer);
-      window.__marqueeTimer = window.setTimeout(setupMarquee, 180);
-    });
-  } else {
-    setupMarquee();
-  }
+  // Wait for fonts so widths are stable
+  const startMarquee = () => {
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(buildMarquee);
+    } else {
+      buildMarquee();
+    }
+  };
+  startMarquee();
+  window.addEventListener("resize", () => {
+    window.clearTimeout(window.__marqueeTimer);
+    window.__marqueeTimer = window.setTimeout(buildMarquee, 200);
+  });
 
-  // Reveal
+  /* ——— Reveal ——— */
   const reveals = document.querySelectorAll(".reveal");
   if (reduceMotion) {
     reveals.forEach((el) => el.classList.add("is-visible"));
@@ -64,7 +98,7 @@
     });
   }
 
-  // Count-up stats
+  /* ——— Count-up ——— */
   const counters = document.querySelectorAll("[data-count]");
   const animateCount = (el) => {
     const target = Number(el.getAttribute("data-count") || 0);
@@ -96,9 +130,69 @@
     counters.forEach((el) => cio.observe(el));
   }
 
-  // Filters
+  /* ——— Smooth category filter ——— */
   const filters = document.querySelectorAll(".filter");
-  const projects = document.querySelectorAll(".project");
+  const projects = [...document.querySelectorAll(".project")];
+  let filterBusy = false;
+
+  const applyFilter = async (value) => {
+    if (filterBusy) return;
+    filterBusy = true;
+
+    const toHide = [];
+    const toShow = [];
+    projects.forEach((card) => {
+      const cat = card.getAttribute("data-cat");
+      const show = value === "all" || cat === value;
+      if (show) toShow.push(card);
+      else toHide.push(card);
+    });
+
+    if (reduceMotion) {
+      projects.forEach((card) => {
+        const show = toShow.includes(card);
+        card.classList.toggle("is-hidden", !show);
+        card.classList.remove("is-leaving", "is-entering");
+      });
+      filterBusy = false;
+      return;
+    }
+
+    // Leave animation
+    toHide.forEach((card, i) => {
+      card.style.transitionDelay = `${i * 35}ms`;
+      card.classList.add("is-leaving");
+      card.classList.remove("is-entering");
+    });
+
+    await wait(320 + toHide.length * 35);
+
+    toHide.forEach((card) => {
+      card.classList.add("is-hidden");
+      card.classList.remove("is-leaving");
+      card.style.transitionDelay = "";
+    });
+
+    toShow.forEach((card) => {
+      card.classList.remove("is-hidden");
+      card.classList.add("is-entering");
+    });
+
+    // Force reflow then enter
+    void document.getElementById("projects")?.offsetHeight;
+
+    toShow.forEach((card, i) => {
+      card.style.transitionDelay = `${i * 45}ms`;
+      requestAnimationFrame(() => card.classList.remove("is-entering"));
+    });
+
+    await wait(420 + toShow.length * 45);
+    toShow.forEach((card) => {
+      card.style.transitionDelay = "";
+    });
+    filterBusy = false;
+  };
+
   filters.forEach((btn) => {
     btn.addEventListener("click", () => {
       const value = btn.getAttribute("data-filter") || "all";
@@ -106,15 +200,44 @@
         f.classList.toggle("is-active", f === btn);
         f.setAttribute("aria-selected", f === btn ? "true" : "false");
       });
-      projects.forEach((card) => {
-        const cat = card.getAttribute("data-cat");
-        const show = value === "all" || cat === value;
-        card.classList.toggle("is-hidden", !show);
-      });
+      applyFilter(value);
     });
   });
 
-  // Soft mesh parallax + custom cursor + magnetic + tilt
+  /* ——— Scroll progress ——— */
+  const progress = document.getElementById("scrollProgress");
+  const updateProgress = () => {
+    if (!progress) return;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? (window.scrollY / max) * 100 : 0;
+    progress.style.width = `${p}%`;
+  };
+  window.addEventListener("scroll", updateProgress, { passive: true });
+  updateProgress();
+
+  /* ——— Active nav section ——— */
+  const sections = ["work", "craft", "contact"]
+    .map((id) => document.getElementById(id))
+    .filter(Boolean);
+  const navLinks = document.querySelectorAll(".nav__links a, .dock a[data-section]");
+  if (sections.length) {
+    const sio = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const id = entry.target.id;
+          navLinks.forEach((link) => {
+            const href = link.getAttribute("href") || "";
+            link.classList.toggle("is-active", href === `#${id}`);
+          });
+        });
+      },
+      { rootMargin: "-40% 0px -45% 0px", threshold: 0.01 }
+    );
+    sections.forEach((s) => sio.observe(s));
+  }
+
+  /* ——— Desktop interactions ——— */
   if (!reduceMotion && finePointer) {
     document.body.classList.add("has-cursor");
 
@@ -135,7 +258,6 @@
       (e) => {
         mx = e.clientX;
         my = e.clientY;
-
         const nx = (mx / window.innerWidth - 0.5) * 2;
         const ny = (my / window.innerHeight - 0.5) * 2;
         if (blobs[0]) blobs[0].style.transform = `translate(${nx * 28}px, ${ny * 18}px)`;
@@ -158,7 +280,6 @@
       el.addEventListener("pointerleave", () => document.body.classList.remove("is-hovering"));
     });
 
-    // Magnetic buttons
     document.querySelectorAll("[data-magnetic]").forEach((btn) => {
       btn.addEventListener("pointermove", (e) => {
         const rect = btn.getBoundingClientRect();
@@ -171,7 +292,6 @@
       });
     });
 
-    // 3D tilt on project media
     document.querySelectorAll(".tilt").forEach((card) => {
       card.addEventListener("pointermove", (e) => {
         const rect = card.getBoundingClientRect();
