@@ -176,7 +176,7 @@ main,
   transform: translateX(-50%);
   z-index: 50;
   width: max-content;
-  max-width: calc(100% - 24px);
+  max-width: calc(100vw - 24px);
   height: 56px;
   display: flex;
   align-items: center;
@@ -188,17 +188,20 @@ main,
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  overflow: visible;
 }
 
 .nav__logo {
   display: inline-flex;
   align-items: center;
+  flex-shrink: 0;
   height: 40px;
   padding: 0 14px;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1rem;
   letter-spacing: -0.03em;
+  white-space: nowrap;
 }
 
 .nav__logo span {
@@ -382,31 +385,59 @@ main,
 
 /* Marquee */
 .marquee {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   overflow: hidden;
+  padding: 16px 0;
   border-block: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.015);
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.marquee__row {
+  overflow: hidden;
+  width: 100%;
 }
 
 .marquee__track {
   display: flex;
-  gap: 28px;
   width: max-content;
-  padding: 18px 0;
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  letter-spacing: 0.04em;
-  color: var(--muted);
-  animation: marquee 38s linear infinite;
+  animation: marquee 32s linear infinite;
+  will-change: transform;
 }
 
-.marquee__track span:nth-child(odd) {
-  color: rgba(244, 246, 250, 0.72);
+.marquee__row--reverse .marquee__track {
+  animation-name: marquee-reverse;
+  animation-duration: 38s;
+}
+
+.marquee__group {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 22px;
+  padding-right: 22px;
+  font-family: var(--font-display);
+  font-size: clamp(0.85rem, 2.4vw, 1rem);
+  letter-spacing: 0.04em;
+  color: rgba(244, 246, 250, 0.78);
+  white-space: nowrap;
+}
+
+.marquee__group span {
+  flex-shrink: 0;
 }
 
 @keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes marquee-reverse {
+  from { transform: translate3d(-50%, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
 }
 
 /* Sections */
@@ -702,7 +733,11 @@ main,
     display: none;
   }
 
-  .projects,
+  .projects {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
   .craft__grid {
     grid-template-columns: 1fr;
   }
@@ -713,6 +748,22 @@ main,
 
   .hero__stats {
     grid-template-columns: 1fr;
+  }
+
+  .project__meta {
+    padding: 12px;
+  }
+
+  .project__title {
+    font-size: 1.05rem;
+  }
+
+  .project__text {
+    font-size: 0.82rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }
 
@@ -738,6 +789,21 @@ main,
   .project__open {
     opacity: 1;
     transform: none;
+    font-size: 0.72rem;
+    height: 28px;
+    padding: 0 8px;
+    right: 8px;
+    bottom: 8px;
+  }
+
+  .marquee {
+    gap: 8px;
+    padding: 12px 0;
+  }
+
+  .marquee__group {
+    gap: 16px;
+    padding-right: 16px;
   }
 }
 
