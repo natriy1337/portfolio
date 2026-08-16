@@ -5,8 +5,6 @@
   const year = document.getElementById("year");
   if (year) year.textContent = String(new Date().getFullYear());
 
-  const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
-
   /* ——— Seamless marquee (no restart jump) ——— */
   const track = document.getElementById("marqueeTrack");
   let marqueeOffset = 0;
@@ -130,77 +128,84 @@
     counters.forEach((el) => cio.observe(el));
   }
 
-  /* ——— Smooth category filter ——— */
-  const filters = document.querySelectorAll(".filter");
+  /* ——— Category filter (instant + smooth, never locks) ——— */
+  const filters = [...document.querySelectorAll(".filter")];
   const projects = [...document.querySelectorAll(".project")];
-  let filterBusy = false;
+  let filterToken = 0;
 
-  const applyFilter = async (value) => {
-    if (filterBusy) return;
-    filterBusy = true;
+  const applyFilter = (value) => {
+    const token = ++filterToken;
 
-    const toHide = [];
-    const toShow = [];
-    projects.forEach((card) => {
+    projects.forEach((card, i) => {
       const cat = card.getAttribute("data-cat");
       const show = value === "all" || cat === value;
-      if (show) toShow.push(card);
-      else toHide.push(card);
-    });
+      const wasHidden = card.classList.contains("is-hidden");
 
-    if (reduceMotion) {
-      projects.forEach((card) => {
-        const show = toShow.includes(card);
-        card.classList.toggle("is-hidden", !show);
-        card.classList.remove("is-leaving", "is-entering");
-      });
-      filterBusy = false;
-      return;
-    }
+      card.style.animation = "none";
+      card.classList.remove("is-leaving", "is-entering");
 
-    // Leave animation
-    toHide.forEach((card, i) => {
-      card.style.transitionDelay = `${i * 35}ms`;
-      card.classList.add("is-leaving");
-      card.classList.remove("is-entering");
-    });
+      if (!show) {
+        card.classList.add("is-hidden");
+        return;
+      }
 
-    await wait(320 + toHide.length * 35);
-
-    toHide.forEach((card) => {
-      card.classList.add("is-hidden");
-      card.classList.remove("is-leaving");
-      card.style.transitionDelay = "";
-    });
-
-    toShow.forEach((card) => {
       card.classList.remove("is-hidden");
-      card.classList.add("is-entering");
-    });
 
-    // Force reflow then enter
-    void document.getElementById("projects")?.offsetHeight;
+      if (reduceMotion || !wasHidden) return;
 
-    toShow.forEach((card, i) => {
-      card.style.transitionDelay = `${i * 45}ms`;
-      requestAnimationFrame(() => card.classList.remove("is-entering"));
+      card.style.setProperty("--enter-delay", `${i * 40}ms`);
+      void card.offsetWidth;
+      card.style.animation = "";
+      card.classList.add("is-enter");
+      window.setTimeout(() => {
+        if (token !== filterToken) return;
+        card.classList.remove("is-enter");
+        card.style.removeProperty("--enter-delay");
+      }, 500 + i * 40);
     });
-
-    await wait(420 + toShow.length * 45);
-    toShow.forEach((card) => {
-      card.style.transitionDelay = "";
-    });
-    filterBusy = false;
   };
 
   filters.forEach((btn) => {
     btn.addEventListener("click", () => {
       const value = btn.getAttribute("data-filter") || "all";
       filters.forEach((f) => {
-        f.classList.toggle("is-active", f === btn);
-        f.setAttribute("aria-selected", f === btn ? "true" : "false");
+        const on = f === btn;
+        f.classList.toggle("is-active", on);
+        f.setAttribute("aria-selected", on ? "true" : "false");
       });
       applyFilter(value);
+    });
+  });
+
+  // Keyboard: 1–4 switch filters on desktop
+  window.addEventListener("keydown", (e) => {
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+    const map = { "1": "all", "2": "shop", "3": "service", "4": "brand" };
+    const value = map[e.key];
+    if (!value) return;
+    const btn = filters.find((f) => f.getAttribute("data-filter") === value);
+    if (btn) btn.click();
+  });
+
+  const showToast = (text) => {
+    const toast = document.getElementById("toast");
+    if (!toast) return;
+    toast.textContent = text;
+    toast.classList.add("is-on");
+    window.clearTimeout(window.__toastTimer);
+    window.__toastTimer = window.setTimeout(() => toast.classList.remove("is-on"), 2200);
+  };
+
+  // Copy Telegram on contact CTA double-click
+  document.querySelectorAll('a[href*="t.me/Zxci3user1337"]').forEach((link) => {
+    link.addEventListener("dblclick", async (e) => {
+      e.preventDefault();
+      try {
+        await navigator.clipboard.writeText("@Zxci3user1337");
+        showToast("Telegram скопирован: @Zxci3user1337");
+      } catch {
+        showToast("@Zxci3user1337");
+      }
     });
   });
 
@@ -305,5 +310,62 @@
         card.style.transform = "";
       });
     });
+
+    // Spotlight over projects grid
+    const spotlight = document.getElementById("projects");
+    if (spotlight) {
+      spotlight.addEventListener("pointermove", (e) => {
+        const rect = spotlight.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        spotlight.style.setProperty("--spot-x", `${x}%`);
+        spotlight.style.setProperty("--spot-y", `${y}%`);
+        spotlight.classList.add("has-spot");
+      });
+      spotlight.addEventListener("pointerleave", () => {
+        spotlight.classList.remove("has-spot");
+      });
+    }
+
+    // Title scramble on project hover
+    const scramble = (el) => {
+      const original = el.dataset.original || el.textContent || "";
+      el.dataset.original = original;
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      let frame = 0;
+      const total = Math.min(12, original.length + 4);
+      const id = window.setInterval(() => {
+        el.textContent = original
+          .split("")
+          .map((ch, i) => {
+            if (ch === " " || i < frame / 2) return original[i];
+            return chars[Math.floor(Math.random() * chars.length)];
+          })
+          .join("");
+        frame += 1;
+        if (frame > total) {
+          window.clearInterval(id);
+          el.textContent = original;
+        }
+      }, 28);
+    };
+
+    document.querySelectorAll(".project__title").forEach((title) => {
+      title.dataset.original = title.textContent || "";
+      title.parentElement?.parentElement?.addEventListener("pointerenter", () => scramble(title));
+    });
+
+    // Hero parallax on scroll
+    const hero = document.querySelector(".hero");
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!hero) return;
+        const y = Math.min(120, window.scrollY * 0.22);
+        hero.style.transform = `translate3d(0, ${y}px, 0)`;
+        hero.style.opacity = String(Math.max(0.35, 1 - window.scrollY / 700));
+      },
+      { passive: true }
+    );
   }
 })();

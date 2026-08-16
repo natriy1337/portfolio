@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./styles.css?v=13" />
+  <link rel="stylesheet" href="./styles.css?v=14" />
 </head>
 <body>
   <div class="mesh" aria-hidden="true">
@@ -19,6 +19,7 @@
   <div class="noise" aria-hidden="true"></div>
   <div class="cursor" aria-hidden="true"><span class="cursor__ring"></span><span class="cursor__dot"></span></div>
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <header class="nav">
     <nav class="nav__links" aria-label="Навигация">
@@ -100,7 +101,7 @@
         <button class="filter" type="button" data-filter="brand" role="tab" aria-selected="false">Бренды</button>
       </div>
 
-      <div class="projects" id="projects">
+      <div class="projects" id="projects" data-spotlight>
         <article class="project reveal" data-cat="service" data-accent="amber">
           <a class="project__media tilt" href="https://automafia.by/" target="_blank" rel="noopener noreferrer">
             <img src="https://s.wordpress.com/mshots/v1/https%3A%2F%2Fautomafia.by%2F?w=960" alt="Автомафия" loading="lazy" />
@@ -261,6 +262,6 @@
     <a class="dock__cta" href="https://t.me/Zxci3user1337" target="_blank" rel="noopener noreferrer">Telegram</a>
   </nav>
 
-  <script src="./script.js?v=13"></script>
+  <script src="./script.js?v=14"></script>
 </body>
 </html>
