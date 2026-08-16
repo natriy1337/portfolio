@@ -5,6 +5,39 @@
   const year = document.getElementById("year");
   if (year) year.textContent = String(new Date().getFullYear());
 
+  // Seamless infinite marquee: clone group once, duration by width
+  const setupMarquee = () => {
+    const track = document.getElementById("marqueeTrack");
+    if (!track) return;
+    const first = track.querySelector(".marquee__group");
+    if (!first) return;
+
+    track.classList.remove("is-ready");
+    track.querySelectorAll(".marquee__group").forEach((node, i) => {
+      if (i > 0) node.remove();
+    });
+
+    const clone = first.cloneNode(true);
+    track.appendChild(clone);
+
+    const width = first.getBoundingClientRect().width;
+    if (width > 0) {
+      const seconds = Math.max(28, Math.round(width / 42));
+      track.style.setProperty("--marquee-duration", `${seconds}s`);
+    }
+    track.classList.add("is-ready");
+  };
+
+  if (!reduceMotion) {
+    setupMarquee();
+    window.addEventListener("resize", () => {
+      window.clearTimeout(window.__marqueeTimer);
+      window.__marqueeTimer = window.setTimeout(setupMarquee, 180);
+    });
+  } else {
+    setupMarquee();
+  }
+
   // Reveal
   const reveals = document.querySelectorAll(".reveal");
   if (reduceMotion) {
