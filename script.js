@@ -189,11 +189,6 @@
     const enhance = () => {
       document.body.classList.add("has-cursor");
       const cursor = document.querySelector(".cursor");
-      const blobs = [
-        document.querySelector(".mesh__blob--1"),
-        document.querySelector(".mesh__blob--2"),
-        document.querySelector(".mesh__blob--3"),
-      ].filter(Boolean);
 
       let mx = window.innerWidth / 2;
       let my = window.innerHeight / 2;
@@ -205,11 +200,6 @@
         (e) => {
           mx = e.clientX;
           my = e.clientY;
-          const nx = (mx / window.innerWidth - 0.5) * 2;
-          const ny = (my / window.innerHeight - 0.5) * 2;
-          if (blobs[0]) blobs[0].style.transform = `translate(${nx * 28}px, ${ny * 18}px)`;
-          if (blobs[1]) blobs[1].style.transform = `translate(${nx * -34}px, ${ny * 22}px)`;
-          if (blobs[2]) blobs[2].style.transform = `translate(${nx * 18}px, ${ny * -26}px)`;
         },
         { passive: true }
       );
