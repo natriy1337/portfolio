@@ -92,7 +92,7 @@
           if (token !== filterToken) return;
           card.classList.add("is-hidden");
           card.classList.remove("is-leaving");
-        }, 200);
+        }, 280);
         return;
       }
 
@@ -102,7 +102,7 @@
 
       if (reduceMotion) return;
 
-      const delay = enterIndex * 40;
+      const delay = enterIndex * 55;
       enterIndex += 1;
       card.style.setProperty("--enter-delay", `${delay}ms`);
       void card.offsetWidth;
@@ -111,7 +111,7 @@
         if (token !== filterToken) return;
         card.classList.remove("is-enter");
         card.style.removeProperty("--enter-delay");
-      }, 420 + delay);
+      }, 560 + delay);
     });
   };
 
