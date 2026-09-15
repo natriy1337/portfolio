@@ -4,8 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Портфолио: лендинги, магазины и системы заказов в продакшене. Смотрите кейсы и напишите в Telegram." />
-  <meta name="theme-color" content="#000000" />
-  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#06080d" />
   <meta name="robots" content="index,follow" />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <link rel="canonical" href="https://natriy1337.github.io/portfolio/" />
@@ -18,10 +17,16 @@
   <link rel="preload" href="./fonts/g8.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="./fonts/g2.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="./fonts/fonts.css" />
-  <link rel="stylesheet" href="./styles.css?v=30" />
+  <link rel="stylesheet" href="./styles.css?v=29" />
 </head>
 <body>
   <a class="skip" href="#work">К работам</a>
+  <div class="mesh" aria-hidden="true">
+    <span class="mesh__blob mesh__blob--1"></span>
+    <span class="mesh__blob mesh__blob--2"></span>
+    <span class="mesh__blob mesh__blob--3"></span>
+  </div>
+  <div class="noise" aria-hidden="true"></div>
   <div class="cursor" aria-hidden="true"><span class="cursor__ring"></span><span class="cursor__dot"></span></div>
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -111,11 +116,11 @@
       </div>
 
       <div class="projects" id="projects">
-        <article class="project project--featured reveal" data-cat="service">
+        <article class="project reveal" data-cat="service" data-accent="amber">
           <a class="project__media tilt" href="https://automafia.by/" target="_blank" rel="noopener noreferrer">
             <picture>
               <source srcset="./images/automafia.webp" type="image/webp" />
-              <img src="./images/automafia.jpg" alt="Сайт Автомафия — кузовной ремонт" width="1200" height="750" fetchpriority="high" decoding="async" sizes="(max-width: 900px) 100vw, 700px" />
+              <img src="./images/automafia.jpg" alt="Сайт Автомафия — кузовной ремонт" width="1200" height="750" loading="lazy" decoding="async" sizes="(max-width: 900px) 50vw, 560px" />
             </picture>
             <span class="project__veil"></span>
             <span class="project__open">Открыть ↗</span>
@@ -127,11 +132,11 @@
           </div>
         </article>
 
-        <article class="project reveal" data-cat="service">
+        <article class="project reveal" data-cat="service" data-accent="cyan">
           <a class="project__media tilt" href="https://avtoprokatr4.by/" target="_blank" rel="noopener noreferrer">
             <picture>
               <source srcset="./images/avtoprokat.webp" type="image/webp" />
-              <img src="./images/avtoprokat.jpg" alt="Сайт Avtoprokat.r4 — автопрокат" width="1200" height="750" loading="lazy" decoding="async" sizes="(max-width: 900px) 100vw, 540px" />
+              <img src="./images/avtoprokat.jpg" alt="Сайт Avtoprokat.r4 — автопрокат" width="1200" height="750" loading="lazy" decoding="async" sizes="(max-width: 900px) 50vw, 560px" />
             </picture>
             <span class="project__veil"></span>
             <span class="project__open">Открыть ↗</span>
@@ -143,11 +148,11 @@
           </div>
         </article>
 
-        <article class="project reveal" data-cat="shop">
+        <article class="project reveal" data-cat="shop" data-accent="violet">
           <a class="project__media tilt" href="https://24krkn.ru/?aw=c8vv42vb937v43vfhhaw" target="_blank" rel="noopener noreferrer">
             <picture>
               <source srcset="./images/kraken.webp" type="image/webp" />
-              <img src="./images/kraken.jpg" alt="Сайт Kraken Vape" width="1200" height="750" loading="lazy" decoding="async" sizes="(max-width: 900px) 100vw, 540px" />
+              <img src="./images/kraken.jpg" alt="Сайт Kraken Vape" width="1200" height="750" loading="lazy" decoding="async" sizes="(max-width: 900px) 50vw, 560px" />
             </picture>
             <span class="project__veil"></span>
             <span class="project__open">Открыть ↗</span>
@@ -159,11 +164,11 @@
           </div>
         </article>
 
-        <article class="project reveal" data-cat="service">
+        <article class="project reveal" data-cat="service" data-accent="blue">
           <a class="project__media tilt" href="https://order.dtpropeller.com" target="_blank" rel="noopener noreferrer">
             <picture>
               <source srcset="./images/dtprop.webp" type="image/webp" />
-              <img src="./images/dtprop.jpg" alt="Сайт ДТ Проп — система заказов" width="1200" height="750" loading="lazy" decoding="async" sizes="(max-width: 900px) 100vw, 540px" />
+              <img src="./images/dtprop.jpg" alt="Сайт ДТ Проп — система заказов" width="1200" height="750" loading="lazy" decoding="async" sizes="(max-width: 900px) 50vw, 560px" />
             </picture>
             <span class="project__veil"></span>
             <span class="project__open">Открыть ↗</span>
@@ -175,11 +180,11 @@
           </div>
         </article>
 
-        <article class="project reveal" data-cat="shop">
+        <article class="project reveal" data-cat="shop" data-accent="mint">
           <a class="project__media tilt" href="https://cloudshopgrodno.com/" target="_blank" rel="noopener noreferrer">
             <picture>
               <source srcset="./images/cloudshop.webp?v=25" type="image/webp" />
-              <img src="./images/cloudshop.jpg?v=25" alt="Сайт CloudShop" width="1200" height="750" loading="lazy" decoding="async" sizes="(max-width: 900px) 100vw, 540px" />
+              <img src="./images/cloudshop.jpg?v=25" alt="Сайт CloudShop" width="1200" height="750" loading="lazy" decoding="async" sizes="(max-width: 900px) 50vw, 560px" />
             </picture>
             <span class="project__veil"></span>
             <span class="project__open">Открыть ↗</span>
@@ -191,11 +196,11 @@
           </div>
         </article>
 
-        <article class="project reveal" data-cat="brand">
+        <article class="project reveal" data-cat="brand" data-accent="silver">
           <a class="project__media tilt" href="https://vvsstore.by/" target="_blank" rel="noopener noreferrer">
             <picture>
               <source srcset="./images/vvsstore.webp" type="image/webp" />
-              <img src="./images/vvsstore.jpg" alt="Сайт VVS Store" width="1200" height="750" loading="lazy" decoding="async" sizes="(max-width: 900px) 100vw, 540px" />
+              <img src="./images/vvsstore.jpg" alt="Сайт VVS Store" width="1200" height="750" loading="lazy" decoding="async" sizes="(max-width: 900px) 50vw, 560px" />
             </picture>
             <span class="project__veil"></span>
             <span class="project__open">Открыть ↗</span>
@@ -207,11 +212,11 @@
           </div>
         </article>
 
-        <article class="project reveal" data-cat="brand">
+        <article class="project reveal" data-cat="brand" data-accent="rose">
           <a class="project__media tilt" href="https://miorri2.by/" target="_blank" rel="noopener noreferrer">
             <picture>
               <source srcset="./images/miorri.webp" type="image/webp" />
-              <img src="./images/miorri.jpg" alt="Сайт MIORRI" width="1200" height="750" loading="lazy" decoding="async" sizes="(max-width: 900px) 100vw, 540px" />
+              <img src="./images/miorri.jpg" alt="Сайт MIORRI" width="1200" height="750" loading="lazy" decoding="async" sizes="(max-width: 900px) 50vw, 560px" />
             </picture>
             <span class="project__veil"></span>
             <span class="project__open">Открыть ↗</span>
@@ -223,11 +228,11 @@
           </div>
         </article>
 
-        <article class="project reveal" data-cat="brand">
+        <article class="project reveal" data-cat="brand" data-accent="ember">
           <a class="project__media tilt" href="https://triadwear.com/" target="_blank" rel="noopener noreferrer">
             <picture>
               <source srcset="./images/triadwear.webp" type="image/webp" />
-              <img src="./images/triadwear.jpg" alt="Сайт TRIAD Wear" width="1200" height="750" loading="lazy" decoding="async" sizes="(max-width: 900px) 100vw, 540px" />
+              <img src="./images/triadwear.jpg" alt="Сайт TRIAD Wear" width="1200" height="750" loading="lazy" decoding="async" sizes="(max-width: 900px) 50vw, 560px" />
             </picture>
             <span class="project__veil"></span>
             <span class="project__open">Открыть ↗</span>
@@ -239,11 +244,11 @@
           </div>
         </article>
 
-        <article class="project reveal" data-cat="service">
+        <article class="project reveal" data-cat="service" data-accent="rose">
           <a class="project__media tilt" href="https://heartlink-kohl.vercel.app/" target="_blank" rel="noopener noreferrer">
             <picture>
               <source srcset="./images/heartlink.webp" type="image/webp" />
-              <img src="./images/heartlink.jpg" alt="HeartLink — сайт-признание" width="1200" height="750" loading="lazy" decoding="async" sizes="(max-width: 900px) 100vw, 540px" />
+              <img src="./images/heartlink.jpg" alt="HeartLink — сайт-признание" width="1200" height="750" loading="lazy" decoding="async" sizes="(max-width: 900px) 50vw, 560px" />
             </picture>
             <span class="project__veil"></span>
             <span class="project__open">Открыть ↗</span>
@@ -311,6 +316,6 @@
     <a class="dock__cta" href="https://t.me/Zxci3user1337" target="_blank" rel="noopener noreferrer">Telegram</a>
   </nav>
 
-  <script src="./script.js?v=30" defer></script>
+  <script src="./script.js?v=29" defer></script>
 </body>
 </html>
