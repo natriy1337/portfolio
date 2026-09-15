@@ -1,0 +1,12 @@
+{
+  "name": "portfolio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "capture": "node scripts/capture-previews.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0",
+    "sharp": "^0.33.5"
+  }
+}

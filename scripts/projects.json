@@ -1,0 +1,45 @@
+[
+  {
+    "id": "automafia",
+    "url": "https://automafia.by/"
+  },
+  {
+    "id": "avtoprokat",
+    "url": "https://avtoprokatr4.by/"
+  },
+  {
+    "id": "kraken",
+    "url": "https://24krkn.ru/?aw=c8vv42vb937v43vfhhaw",
+    "click": [
+      "text=Мне есть 18",
+      "text=Мне есть 18 лет",
+      "text=Да, мне есть 18",
+      "text=18+",
+      "button:has-text('18')"
+    ]
+  },
+  {
+    "id": "dtprop",
+    "url": "https://order.dtpropeller.com"
+  },
+  {
+    "id": "cloudshop",
+    "url": "https://cloudshopgrodno.com/"
+  },
+  {
+    "id": "vvsstore",
+    "url": "https://vvsstore.by/"
+  },
+  {
+    "id": "miorri",
+    "url": "https://miorri2.by/"
+  },
+  {
+    "id": "triadwear",
+    "url": "https://triadwear.com/"
+  },
+  {
+    "id": "heartlink",
+    "url": "https://heartlink-kohl.vercel.app/"
+  }
+]

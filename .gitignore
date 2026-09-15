@@ -1,2 +1,6 @@
-﻿lh-*.json
-
+﻿node_modules/
+package-lock.json.bak
+.DS_Store
+*.log
+playwright-report/
+test-results/
