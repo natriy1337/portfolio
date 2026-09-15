@@ -6,14 +6,17 @@
   --line: rgba(255, 255, 255, 0.08);
   --line-strong: rgba(255, 255, 255, 0.14);
   --text: #f4f6fa;
-  --muted: #c5cdd9;
+  --muted: #d0d7e2;
   --cyan: #7dd3fc;
   --violet: #c4b5fd;
   --rose: #fda4af;
   --grad: linear-gradient(120deg, var(--cyan), var(--violet) 48%, var(--rose));
   --font-display: "Unbounded", "Segoe UI", system-ui, sans-serif;
   --font-body: "Onest", "Segoe UI", system-ui, sans-serif;
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-move: cubic-bezier(0.77, 0, 0.175, 1);
+  --duration-fast: 140ms;
+  --duration-ui: 200ms;
   --radius: 22px;
   --nav-h: 76px;
 }
@@ -288,7 +291,17 @@ main,
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;
-  transition: transform 0.25s var(--ease), box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+  cursor: pointer;
+  transition:
+    transform var(--duration-fast) var(--ease),
+    box-shadow var(--duration-ui) ease,
+    background var(--duration-ui) ease,
+    border-color var(--duration-ui) ease,
+    opacity var(--duration-ui) ease;
+}
+
+.btn:active {
+  transform: scale(0.97);
 }
 
 .btn--pill {
@@ -341,7 +354,9 @@ main,
 
 .btn:focus-visible,
 .filter:focus-visible,
-.nav__links a:focus-visible {
+.nav__links a:focus-visible,
+.dock a:focus-visible,
+.project__media:focus-visible {
   outline: 2px solid var(--cyan);
   outline-offset: 3px;
 }
@@ -479,7 +494,7 @@ main,
 .contact {
   width: min(1120px, calc(100% - 40px));
   margin: 0 auto;
-  padding: 88px 0 40px;
+  padding: 72px 0 36px;
 }
 
 .section-head {
@@ -527,11 +542,15 @@ main,
   color: var(--muted);
   cursor: pointer;
   transition:
-    color 0.25s ease,
-    background 0.25s ease,
-    border-color 0.25s ease,
-    box-shadow 0.25s ease,
-    transform 0.25s var(--ease);
+    color var(--duration-ui) ease,
+    background var(--duration-ui) ease,
+    border-color var(--duration-ui) ease,
+    box-shadow var(--duration-ui) ease,
+    transform var(--duration-fast) var(--ease);
+}
+
+.filter:active {
+  transform: scale(0.97);
 }
 
 .filter:hover {
@@ -562,26 +581,26 @@ main,
   opacity: 1;
   transform: none;
   transition:
-    opacity 0.32s var(--ease),
-    transform 0.32s var(--ease),
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
+    opacity var(--duration-ui) var(--ease),
+    transform var(--duration-ui) var(--ease),
+    border-color var(--duration-ui) ease,
+    box-shadow var(--duration-ui) ease;
 }
 
 .project.is-leaving {
   opacity: 0 !important;
-  transform: translateY(14px) scale(0.96) !important;
+  transform: translateY(10px) scale(0.97) !important;
   pointer-events: none;
 }
 
 .project.is-enter {
-  animation: project-enter 0.52s var(--ease) var(--enter-delay, 0ms) both;
+  animation: project-enter 0.38s var(--ease) var(--enter-delay, 0ms) both;
 }
 
 @keyframes project-enter {
   from {
     opacity: 0;
-    transform: translateY(22px) scale(0.94);
+    transform: translateY(14px) scale(0.97);
   }
   to {
     opacity: 1;
@@ -595,7 +614,11 @@ main,
 
 .project:hover {
   border-color: rgba(196, 181, 253, 0.35);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
+}
+
+.project:active {
+  transform: scale(0.985);
 }
 
 .project__media {
@@ -620,18 +643,17 @@ main,
   object-fit: cover;
   object-position: top center;
   image-rendering: auto;
-  transition: transform 0.55s var(--ease), filter 0.35s ease;
+  transition: transform 0.4s var(--ease);
 }
 
 .project:hover .project__media img {
-  transform: scale(1.04);
-  filter: brightness(1.05);
+  transform: scale(1.035);
 }
 
 .project__veil {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 35%, rgba(6, 8, 13, 0.72));
+  background: linear-gradient(180deg, transparent 40%, rgba(6, 8, 13, 0.7));
   pointer-events: none;
 }
 
@@ -648,13 +670,16 @@ main,
   font-size: 0.82rem;
   font-weight: 600;
   color: #071018;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.25s ease, transform 0.25s var(--ease);
+  transform: translateY(6px);
+  transition:
+    opacity var(--duration-ui) var(--ease),
+    transform var(--duration-ui) var(--ease);
 }
 
-.project:hover .project__open {
+.project:hover .project__open,
+.project__media:focus-visible .project__open {
   opacity: 1;
   transform: translateY(0);
 }
@@ -801,10 +826,10 @@ main,
 
 .reveal {
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(16px);
   transition:
-    opacity 0.75s var(--ease),
-    transform 0.75s var(--ease);
+    opacity 0.45s var(--ease),
+    transform 0.45s var(--ease);
 }
 
 .reveal.is-visible {
@@ -981,12 +1006,13 @@ main,
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 42px;
+    min-height: 44px;
+    height: 44px;
     border-radius: 999px;
     font-size: 0.82rem;
     font-weight: 600;
     color: var(--muted);
-    transition: color 0.2s ease, background 0.2s ease;
+    transition: color var(--duration-ui) ease, background var(--duration-ui) ease;
   }
 
   .dock a.is-active {
