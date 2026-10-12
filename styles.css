@@ -692,6 +692,7 @@ main,
 .project[data-accent="silver"] .project__tag { color: #c5d0de; }
 .project[data-accent="rose"] .project__tag { color: #f0a8b6; }
 .project[data-accent="ember"] .project__tag { color: #e0bc4a; }
+.project[data-accent="lime"] .project__tag { color: #c8f53c; }
 
 .craft__grid {
   display: grid;
